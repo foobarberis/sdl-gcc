@@ -99,4 +99,8 @@ void Pong::updateGame(SDL_Event * Event)
     processEvent(Event);
     handleCollisions();
     this->_ball.moveBall();
+    // TODO Set r.x and r.y to posX and posY
+    this->_lPaddle.updateRect();
+    this->_rPaddle.updateRect();
+    this->_ball.updateRect();
 }
