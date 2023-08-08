@@ -7,16 +7,15 @@ Ball::Ball()
     this->_r.h = this->_r.w;
     this->_r.x = (SCREEN_WIDTH - this->_r.w) / 2;
     this->_r.y = (SCREEN_HEIGHT - this->_r.h) / 2;
-    this->_dirX = 1;
+    this->_dirX = 1;// SCREEN_WIDTH / 400;
     this->_dirY = 1;
 }
 
 Ball::~Ball() { }
 
+// https://gamedev.stackexchange.com/questions/138837/drawing-at-floating-point-position
 void Ball::moveBall()
 {
     this->_r.x += this->_dirX;
     this->_r.y += this->_dirY;
 }
-
-

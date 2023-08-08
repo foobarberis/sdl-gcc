@@ -10,11 +10,6 @@ public:
     virtual ~Ball();
 
     void moveBall();
-
-
-
-private:
-
 };
 
 #endif

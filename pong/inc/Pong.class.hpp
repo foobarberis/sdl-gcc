@@ -16,16 +16,15 @@ enum eDirections {
 class Pong {
 public:
     Pong();
-    Pong(SDL_Surface * Surface);
     ~Pong();
 
     void initGame();
-    void drawGame(SDL_Window * Window, SDL_Surface * Surface);
+    void drawGame(SDL_Renderer * Renderer);
     void processEvent(SDL_Event * Event);
     void updateGame(SDL_Event * Event);
-	bool checkHitbox(Paddle const & p, Ball const & b);
-	void handleCollisions();
-
+    bool checkHitbox(Paddle const & p, Ball const & b);
+    void handleCollisions();
+    void setPaddleBall();
 
     bool getQuit();
 
@@ -37,8 +36,6 @@ private:
     int _rScore;
     bool _quit;
     bool _pause;
-    Uint32 _white;
-    Uint32 _black;
     SDL_Rect _net;
 };
 

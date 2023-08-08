@@ -1,10 +1,7 @@
 #include "Pong.class.hpp"
 #include <SDL.h>
 
-Pong::Pong() { }
-Pong::~Pong() { }
-
-Pong::Pong(SDL_Surface * Surface)
+Pong::Pong()
 {
     this->_lPaddle.setX(10);
     this->_rPaddle.setX(SCREEN_WIDTH - (10 + this->_rPaddle.getWidth()));
@@ -12,31 +9,32 @@ Pong::Pong(SDL_Surface * Surface)
     this->_rScore = 0;
     this->_quit = false;
     this->_pause = false;
-    this->_white = SDL_MapRGB(Surface->format, 0xFF, 0xFF, 0xFF);
-    this->_black = SDL_MapRGB(Surface->format, 0, 0, 0);
     this->_net.w = 15;
     this->_net.h = 20;
     this->_net.x = (SCREEN_WIDTH - this->_net.w) / 2;
     this->_net.y = 10;
 }
+Pong::~Pong() { }
 
-void Pong::drawGame(SDL_Window * Window, SDL_Surface * Surface)
+void Pong::drawGame(SDL_Renderer * Renderer)
 {
     bool draw = true;
 
-    SDL_FillRect(Surface, NULL, SDL_MapRGB(Surface->format, 0, 0, 0));
-    SDL_FillRect(Surface, this->_lPaddle.getRect(), this->_white);
-    SDL_FillRect(Surface, this->_rPaddle.getRect(), this->_white);
-    SDL_FillRect(Surface, this->_ball.getRect(), this->_white);
+    SDL_SetRenderDrawColor(Renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(Renderer);
+    SDL_SetRenderDrawColor(Renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(Renderer, this->_lPaddle.getRect());
+    SDL_RenderFillRect(Renderer, this->_rPaddle.getRect());
+    SDL_RenderFillRect(Renderer, this->_ball.getRect());
     for (this->_net.y = 10; this->_net.y < SCREEN_HEIGHT; this->_net.y += 20) {
         if (draw) {
-            SDL_FillRect(Surface, &(this->_net), this->_white);
+            SDL_RenderFillRect(Renderer, &(this->_net));
             draw = false;
         } else {
             draw = true;
         }
     }
-    SDL_UpdateWindowSurface(Window);
+    SDL_RenderPresent(Renderer);
 }
 
 bool Pong::getQuit()
@@ -73,12 +71,22 @@ bool Pong::checkHitbox(Paddle const & p, Ball const & b)
         && (b.getY() < p.getY() + p.getHeight()));
 }
 
+void Pong::setPaddleBall()
+{
+    this->_ball.setX((SCREEN_WIDTH - this->_ball.getWidth()) / 2);
+    this->_ball.setY((SCREEN_HEIGHT - this->_ball.getHeight()) / 2);
+    this->_lPaddle.setY((SCREEN_HEIGHT - this->_lPaddle.getHeight()) / 2);
+    this->_rPaddle.setY((SCREEN_HEIGHT - this->_rPaddle.getHeight()) / 2);
+}
+
 void Pong::handleCollisions()
 {
     if (this->_ball.getX() + this->_ball.getWidth() >= SCREEN_WIDTH - 1) {
         this->_lScore++;
+        setPaddleBall();
     } else if (this->_ball.getX() <= 0) {
         this->_rScore++;
+        setPaddleBall();
     } else if ((this->_ball.getY() <= 1) || (this->_ball.getY() + this->_ball.getHeight() >= SCREEN_HEIGHT - 1)) {
         this->_ball.setDirY(-this->_ball.getDirY());
     } else if (checkHitbox(this->_lPaddle, this->_ball) || checkHitbox(this->_rPaddle, this->_ball)) {
