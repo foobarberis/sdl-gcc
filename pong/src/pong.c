@@ -57,9 +57,9 @@ void game_update(Game * game)
     game_input_handler(game);
     game_collision_handler(game);
     ball_move(&game->ball);
-    rect_set(&game->l_pad.r, game->l_pad.posX, game->l_pad.posY, 0, 0);
-    rect_set(&game->r_pad.r, game->r_pad.posX, game->r_pad.posY, 0, 0);
-    rect_set(&game->ball.r, game->ball.posX, game->ball.posY, 0, 0);
+    rect_set(&game->l_pad.r, game->l_pad.pos_x, game->l_pad.pos_y, 0, 0);
+    rect_set(&game->r_pad.r, game->r_pad.pos_x, game->r_pad.pos_y, 0, 0);
+    rect_set(&game->ball.r, game->ball.pos_x, game->ball.pos_y, 0, 0);
 }
 
 void game_input_handler(Game * game)
@@ -86,25 +86,25 @@ void game_input_handler(Game * game)
 /* check if a collision occured between the ball and the paddle */
 static int check_collision(Paddle * paddle, Ball * ball)
 {
-    return ((paddle->posX < ball->posX + ball->r.w)
-        && (ball->posX < paddle->posX + paddle->r.w)
-        && (paddle->posY < ball->posY + ball->r.h)
-        && (ball->posY < paddle->posY + paddle->r.h));
+    return ((paddle->pos_x < ball->pos_x + ball->r.w)
+        && (ball->pos_x < paddle->pos_x + paddle->r.w)
+        && (paddle->pos_y < ball->pos_y + ball->r.h)
+        && (ball->pos_y < paddle->pos_y + paddle->r.h));
 }
 
 /* Handle the collision of the ball with the paddles and the walls */
 void game_collision_handler(Game * game)
 {
-    if (game->ball.posX + game->ball.r.w >= SCREEN_WIDTH - 1) {
+    if (game->ball.pos_x + game->ball.r.w >= SCREEN_WIDTH - 1) {
         game->l_score++;
         game_reset(game);
-    } else if (game->ball.posX <= 0) {
+    } else if (game->ball.pos_x <= 0) {
         game->r_score++;
         game_reset(game);
-    } else if ((game->ball.posY <= 1) || (game->ball.posY + game->ball.r.h >= SCREEN_HEIGHT - 1)) {
-        game->ball.dirY = -game->ball.dirY;
+    } else if ((game->ball.pos_y <= 1) || (game->ball.pos_y + game->ball.r.h >= SCREEN_HEIGHT - 1)) {
+        game->ball.dir_y = -game->ball.dir_y;
     } else if (check_collision(&game->l_pad, &game->ball) || check_collision(&game->r_pad, &game->ball)) {
-        game->ball.dirX = -game->ball.dirX;
+        game->ball.dir_x = -game->ball.dir_x;
     }
 }
 
@@ -122,29 +122,29 @@ void ball_init(Ball * ball)
 {
     ball->r.w = 15;
     ball->r.h = ball->r.w;
-    ball->posX = (SCREEN_WIDTH - ball->r.w) / 2;
-    ball->posY = (SCREEN_HEIGHT - ball->r.h) / 2;
+    ball->pos_x = (SCREEN_WIDTH - ball->r.w) / 2;
+    ball->pos_y = (SCREEN_HEIGHT - ball->r.h) / 2;
     ball->r.x = (SCREEN_WIDTH - ball->r.w) / 2;
     ball->r.y = (SCREEN_HEIGHT - ball->r.h) / 2;
-    ball->dirX = 0.25;
-    ball->dirY = 0.25;
+    ball->dir_x = 0.25;
+    ball->dir_y = 0.25;
 }
 
 // https://gamedev.stackexchange.com/questions/138837/drawing-at-floating-point-position
 void ball_move(Ball * ball)
 {
-    ball->posX += ball->dirX;
-    ball->posY += ball->dirY;
+    ball->pos_x += ball->dir_x;
+    ball->pos_y += ball->dir_y;
 }
 
 void paddle_move(Paddle * paddle, int direction)
 {
     if (direction == UP) {
-        if (paddle->posY - paddle->dirY >= 5.0)
-            paddle->posY -= paddle->dirY;
+        if (paddle->pos_y - paddle->dir_y >= 5.0)
+            paddle->pos_y -= paddle->dir_y;
     } else if (direction == DOWN) {
-        if (paddle->posY + (float)paddle->r.h + paddle->dirY <= SCREEN_HEIGHT - 5)
-            paddle->posY += paddle->dirY;
+        if (paddle->pos_y + (float)paddle->r.h + paddle->dir_y <= SCREEN_HEIGHT - 5)
+            paddle->pos_y += paddle->dir_y;
     }
 }
 
@@ -154,10 +154,10 @@ void paddle_init(Paddle * paddle, int position)
     paddle->r.w = 15;
     paddle->r.x = 0;
     paddle->r.y = (SCREEN_HEIGHT - paddle->r.h) / 2;
-    paddle->dirX = 0;
-    paddle->dirY = 10; // SCREEN_HEIGHT / 70;
+    paddle->dir_x = 0;
+    paddle->dir_y = 10; // SCREEN_HEIGHT / 70;
     if (position == LEFT)
-        paddle->posX = 10;
+        paddle->pos_x = 10;
     else
-        paddle->posX = SCREEN_WIDTH - (10 + paddle->r.w);
+        paddle->pos_x = SCREEN_WIDTH - (10 + paddle->r.w);
 }

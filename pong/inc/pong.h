@@ -17,10 +17,10 @@ typedef enum e_directions Directions;
 
 struct s_object {
     SDL_Rect r;
-    float posX; // rename to camel_case
-    float posY; // rename to camel_case
-    float dirX; // rename to camel_case
-    float dirY; // rename to camel_case
+    float pos_x; // rename to camel_case
+    float pos_y; // rename to camel_case
+    float dir_x; // rename to camel_case
+    float dir_y; // rename to camel_case
 };
 
 struct s_game {
