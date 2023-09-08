@@ -3,8 +3,8 @@
 # Whitelist all directories
 !*/
 # Whitelist the file you're interested in.
-!*.cpp
-!*.hpp
+!*.c
+!*.h
 !Makefile
 !.gitignore
 !.clang-format

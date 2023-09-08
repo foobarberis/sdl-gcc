@@ -1,26 +1,14 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mbarberi <mbarberi@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/01/23 21:40:52 by mbarberi          #+#    #+#              #
-#    Updated: 2023/08/05 15:55:38 by mbarberi         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 # If necessary we can use $(info VARIABLE:$(VARIABLE)) to debug.
 # We can also use make -d.
 
 NAME		:=	pong
-SRCS		:=	main.cpp Pong.class.cpp Paddle.class.cpp Ball.class.cpp
-HEAD		:=	Pong.class.hpp Paddle.class.hpp Ball.class.hpp
+SRCS		:=	main.c pong.c
+HEAD		:=	pong.h
 
-CXX			:=	clang++
-CXXFLAGS	:=	-Wall -Wextra
+C			:=	cc
+CFLAGS		:=	-Wall -Wextra -Werror
 
-EXT			:=	.cpp
+EXT			:=	.c
 
 REMOVE		:=	rm -f
 
@@ -38,14 +26,14 @@ OBJECTS		:=	$(patsubst $(SRCDIR)/%$(EXT), $(OBJDIR)/%.o, $(SOURCES))
 
 $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -I$(INCDIR) -I$(SDL_INC) -c $< -o $@
+	$(C) $(CFLAGS) -I$(INCDIR) -I$(SDL_INC) -c $< -o $@
 
 all: $(NAME)
 
 $(OBJECTS): $(HEADERS) Makefile
 
 $(NAME): $(OBJECTS)
-	$(CXX) -L$(SDL_LIB) -lSDL2 $(OBJECTS) -o $(NAME)
+	$(C) -L$(SDL_LIB) -lSDL2 $(OBJECTS) -o $(NAME)
 
 clean:
 	$(REMOVE) $(OBJECTS)
