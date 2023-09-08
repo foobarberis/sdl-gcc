@@ -6,7 +6,7 @@ SRCS		:=	main.c pong.c
 HEAD		:=	pong.h
 
 C			:=	cc
-CFLAGS		:=	-Wall -Wextra -Werror
+CFLAGS		:=	-Wall -Wextra -Werror -O3
 
 EXT			:=	.c
 
