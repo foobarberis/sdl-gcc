@@ -14,12 +14,16 @@ int game_init(Game * game)
             game->renderer = SDL_CreateRenderer(game->window, -1, 0);
         }
     }
+    // FIXME: Add check for NULL
+    game->textures[PADDLE] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/paddle.bmp"));
+    game->textures[BALL] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/ball.bmp"));
+    game->textures[NET] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/net.bmp"));
     game->l_score = 0;
     game->r_score = 0;
     game->quit = false;
     game->pause = false;
     game->serve = false;
-    rect_set(&game->net, (SCREEN_WIDTH - game->net.w) / 2, 10, 15, 20);
+    rect_set(&game->net, (SCREEN_WIDTH - game->net.w) / 2, 0, 16, SCREEN_HEIGHT);
     paddle_init(&game->l_pad, LEFT);
     paddle_init(&game->r_pad, RIGHT);
     return 0;
@@ -35,22 +39,11 @@ void game_reset(Game * game)
 
 void game_draw(Game * game)
 {
-    bool draw = true;
-
-    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(game->renderer);
-    SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(game->renderer, &game->l_pad.r);
-    SDL_RenderFillRect(game->renderer, &game->r_pad.r);
-    SDL_RenderFillRect(game->renderer, &game->ball.r);
-    for (game->net.y = 10; game->net.y < SCREEN_HEIGHT; game->net.y += 20) {
-        if (draw) {
-            SDL_RenderFillRect(game->renderer, &(game->net));
-            draw = false;
-        } else {
-            draw = true;
-        }
-    }
+    SDL_RenderCopy(game->renderer, game->textures[PADDLE], NULL, &game->l_pad.r);
+    SDL_RenderCopy(game->renderer, game->textures[PADDLE], NULL, &game->r_pad.r);
+    SDL_RenderCopy(game->renderer, game->textures[BALL], NULL, &game->ball.r);
+    SDL_RenderCopy(game->renderer, game->textures[NET], NULL, &game->net);
     SDL_RenderPresent(game->renderer);
 }
 
@@ -146,8 +139,8 @@ void ball_init(Ball * ball)
 {
     ball->pos_x = (SCREEN_WIDTH - ball->r.w) / 2;
     ball->pos_y = (SCREEN_HEIGHT - ball->r.h) / 2;
-    ball->dir_x = 0.10;
-    ball->dir_y = 0.10;
+    ball->dir_x = 0.25;
+    ball->dir_y = 0.25;
     rect_set(&ball->r, ball->pos_x, ball->pos_y, 15, 15);
 }
 
@@ -179,6 +172,6 @@ void paddle_init(Paddle * paddle, int position)
     }
     paddle->pos_y = (SCREEN_HEIGHT - paddle->r.h) / 2;
     paddle->dir_x = 0;
-    paddle->dir_y = 0.10;
+    paddle->dir_y = 0.50;
     rect_set(&paddle->r, paddle->pos_x, paddle->pos_y, 15, 100);
 }

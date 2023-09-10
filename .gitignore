@@ -3,6 +3,7 @@
 # Whitelist all directories
 !*/
 # Whitelist the file you're interested in.
+!*.bmp
 !*.c
 !*.h
 !Makefile

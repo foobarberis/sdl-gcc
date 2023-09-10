@@ -14,6 +14,7 @@ typedef struct s_object Ball;
 typedef struct s_object Paddle;
 
 typedef enum e_directions Directions;
+typedef enum e_textures Textures;
 
 struct s_object {
     SDL_Rect r;
@@ -26,12 +27,13 @@ struct s_object {
 struct s_game {
     SDL_Window * window;
     SDL_Renderer * renderer;
+    SDL_Texture * textures[3];
     SDL_Event event;
     int r_score;
     int l_score;
     bool quit;
     bool pause;
-	bool serve;
+    bool serve;
     Ball ball;
     Paddle r_pad;
     Paddle l_pad;
@@ -43,6 +45,12 @@ enum e_directions {
     DOWN,
     LEFT,
     RIGHT
+};
+
+enum e_textures {
+    PADDLE,
+    BALL,
+    NET
 };
 
 int game_init(Game * game);
