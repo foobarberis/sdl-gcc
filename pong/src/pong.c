@@ -1,5 +1,15 @@
 #include "pong.h"
 
+void game_quit(Game * game)
+{
+    SDL_DestroyRenderer(game->renderer);
+    SDL_DestroyWindow(game->window);
+    SDL_DestroyTexture(game->textures[PADDLE]);
+    SDL_DestroyTexture(game->textures[BALL]);
+    SDL_DestroyTexture(game->textures[NET]);
+    SDL_Quit();
+}
+
 int game_init(Game * game)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -14,10 +24,17 @@ int game_init(Game * game)
             game->renderer = SDL_CreateRenderer(game->window, -1, 0);
         }
     }
-    // FIXME: Add check for NULL
-    game->textures[PADDLE] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/paddle.bmp"));
-    game->textures[BALL] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/ball.bmp"));
-    game->textures[NET] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/net.bmp"));
+    if (!(game->textures[PADDLE] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/paddle.bmp"))))
+        return 1;
+    if (!(game->textures[BALL] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/ball.bmp")))) {
+        SDL_DestroyTexture(game->textures[PADDLE]), game->textures[PADDLE] = NULL;
+        return 1;
+    }
+    if (!(game->textures[NET] = SDL_CreateTextureFromSurface(game->renderer, SDL_LoadBMP("./assets/net.bmp")))) {
+        SDL_DestroyTexture(game->textures[PADDLE]), SDL_DestroyTexture(game->textures[BALL]);
+        game->textures[PADDLE] = game->textures[BALL] = NULL;
+        return 1;
+    }
     game->l_score = 0;
     game->r_score = 0;
     game->quit = false;
@@ -42,8 +59,8 @@ void game_draw(Game * game)
     SDL_RenderClear(game->renderer);
     SDL_RenderCopy(game->renderer, game->textures[PADDLE], NULL, &game->l_pad.r);
     SDL_RenderCopy(game->renderer, game->textures[PADDLE], NULL, &game->r_pad.r);
-    SDL_RenderCopy(game->renderer, game->textures[BALL], NULL, &game->ball.r);
     SDL_RenderCopy(game->renderer, game->textures[NET], NULL, &game->net);
+    SDL_RenderCopy(game->renderer, game->textures[BALL], NULL, &game->ball.r);
     SDL_RenderPresent(game->renderer);
 }
 

@@ -2,6 +2,7 @@
 #define PADDLE_H_
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -16,9 +16,11 @@ SRCDIR		:=	src
 OBJDIR		:=	obj
 INCDIR		:=	inc
 
-SDL_PATH	:=	/opt/homebrew/Cellar/sdl2/2.28.2/
-SDL_INC		:=	$(SDL_PATH)include/SDL2/
-SDL_LIB		:=	$(SDL_PATH)lib/
+SDL_PATH		:=	/opt/homebrew/Cellar/sdl2/2.28.2/
+SDL_IMAGE_PATH	:=	/opt/homebrew/Cellar/sdl2_image/2.6.3_2/
+SDL_INC			:=	$(SDL_PATH)include/SDL2/
+SDL_IMAGE_INC	:=	$(SDL_IMAGE_PATH)include/SDL2/
+SDL_LIB			:=	$(SDL_PATH)lib/
 
 SOURCES		:=	$(addprefix $(SRCDIR)/, $(SRCS))
 HEADERS		:=	$(addprefix $(INCDIR)/, $(HEAD))
@@ -26,7 +28,7 @@ OBJECTS		:=	$(patsubst $(SRCDIR)/%$(EXT), $(OBJDIR)/%.o, $(SOURCES))
 
 $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
 	@mkdir -p $(@D)
-	$(C) $(CFLAGS) -I$(INCDIR) -I$(SDL_INC) -c $< -o $@
+	$(C) $(CFLAGS) -I$(INCDIR) -I$(SDL_INC) -I$(SDL_IMAGE_INC) -c $< -o $@
 
 all: $(NAME)
 

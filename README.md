@@ -2,8 +2,8 @@
 SDL Game ColleCtion
 
 TODO Start screen
+TODO Scale sprites and move speed based on screen dimensions
 TODO Print score
 TODO Print message when paused
-TODO Use sprite for net ball and paddle
-TODO Include SDL and SDL_ttf as git submodulees
-
+TODO Create single player mode
+TDOO Add victory condition 
