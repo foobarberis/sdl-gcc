@@ -2,11 +2,11 @@
 # We can also use make -d.
 
 NAME		:=	pong
-SRCS		:=	main.c pong.c
+SRCS		:=	collision.c draw.c init.c main.c update.c utils.c
 HEAD		:=	pong.h
 
-C			:=	cc
-CFLAGS		:=	-Wall -Wextra -Werror -O3
+CC			:=	clang
+CFLAGS		:=	-Wall -Wextra -g3 -fsanitize=address,undefined
 
 EXT			:=	.c
 
@@ -18,10 +18,10 @@ INCDIR		:=	inc
 
 SDL_PATH		:=	/opt/homebrew/Cellar/sdl2/2.28.2/
 SDL_INC			:=	$(SDL_PATH)include/SDL2/
-SDL_IMAGE_PATH	:=	/opt/homebrew/Cellar/sdl2_image/2.6.3_2/
-SDL_IMAGE_INC	:=	$(SDL_IMAGE_PATH)include/SDL2/
+SDL_TTF_PATH	:=	/opt/homebrew/Cellar/sdl2_ttf/2.20.2/
+SDL_TTF_INC		:=	$(SDL_TTF_PATH)include/SDL2/
 SDL_LIB			:=	$(SDL_PATH)lib/
-SDL_IMAGE_LIB	:=	$(SDL_IMAGE_PATH)lib/
+SDL_IMAGE_LIB	:=	$(SDL_TTF_PATH)lib/
 
 SOURCES		:=	$(addprefix $(SRCDIR)/, $(SRCS))
 HEADERS		:=	$(addprefix $(INCDIR)/, $(HEAD))
@@ -29,14 +29,14 @@ OBJECTS		:=	$(patsubst $(SRCDIR)/%$(EXT), $(OBJDIR)/%.o, $(SOURCES))
 
 $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
 	@mkdir -p $(@D)
-	$(C) $(CFLAGS) -I$(INCDIR) -I$(SDL_INC) -I$(SDL_IMAGE_INC) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCDIR) -I$(SDL_INC) -I$(SDL_TTF_INC) -c $< -o $@
 
 all: $(NAME)
 
 $(OBJECTS): $(HEADERS) Makefile
 
 $(NAME): $(OBJECTS)
-	$(C) -L$(SDL_LIB) -L$(SDL_IMAGE_LIB) -lSDL2 -lSDL2_image $(OBJECTS) -o $(NAME)
+	$(CC) -L$(SDL_LIB) -L$(SDL_IMAGE_LIB) -lSDL2 -lSDL2_ttf -fsanitize=address,undefined $(OBJECTS) -o $(NAME)
 
 clean:
 	$(REMOVE) $(OBJECTS)

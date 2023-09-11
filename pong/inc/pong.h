@@ -2,10 +2,13 @@
 #define PADDLE_H_
 
 #include <SDL.h>
-#include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <unistd.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -16,19 +19,22 @@ typedef struct s_object Paddle;
 
 typedef enum e_directions Directions;
 typedef enum e_textures Textures;
+typedef enum e_font_size Font_size;
 
 struct s_object {
     SDL_Rect r;
     float pos_x;
     float pos_y;
-    float dir_x;
-    float dir_y;
+    float dx;
+    float dy;
 };
 
 struct s_game {
     SDL_Window * window;
     SDL_Renderer * renderer;
-    SDL_Texture * textures[3];
+    SDL_Texture * textures[4];
+    TTF_Font * fonts[3];
+    SDL_Color grey;
     SDL_Event event;
     int r_score;
     int l_score;
@@ -38,7 +44,7 @@ struct s_game {
     Ball ball;
     Paddle r_pad;
     Paddle l_pad;
-    SDL_Rect net;
+    SDL_Rect pause_msg;
 };
 
 enum e_directions {
@@ -51,7 +57,14 @@ enum e_directions {
 enum e_textures {
     PADDLE,
     BALL,
-    NET
+    BG,
+    PAUSE
+};
+
+enum e_font_size {
+    SMALL,
+    MEDIUM,
+    BIG,
 };
 
 int game_init(Game * game);
