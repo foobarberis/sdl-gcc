@@ -30,7 +30,7 @@ static int game_init_fonts(Game * game)
     }
     TTF_SizeText(game->fonts[MEDIUM], "Paused, press Space to continue.", &game->pause_msg.w, &game->pause_msg.h);
     game->pause_msg.x = 10;
-    game->pause_msg.y = SCREEN_HEIGHT - 2 * game->pause_msg.h;
+    game->pause_msg.y = g_screen_height - 2 * game->pause_msg.h;
     return 0;
 }
 
@@ -110,7 +110,7 @@ static int game_init_sdl(Game * game)
             fprintf(stderr, "SDL_ttf could not initialize! SDL_Error: %s\n", TTF_GetError());
             return 1;
         }
-        if (!(game->window = SDL_CreateWindow("Pong", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN))) {
+        if (!(game->window = SDL_CreateWindow("Pong", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, g_screen_width, g_screen_height, SDL_WINDOW_SHOWN))) {
             fprintf(stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
             return 1;
         } else {
@@ -166,22 +166,24 @@ void game_reset(Game * game)
 
 void ball_init(Ball * ball)
 {
-    ball->pos_x = (SCREEN_WIDTH - ball->r.w) / 2;
-    ball->pos_y = (SCREEN_HEIGHT - ball->r.h) / 2;
-    ball->dx = 0.25;
-    ball->dy = 0.25;
-    rect_set(&ball->r, ball->pos_x, ball->pos_y, 16, 16);
+    ball->r.w = 16;
+    ball->r.h = 16;
+    ball->r.x = (g_screen_width - ball->r.w) / 2;
+    ball->r.y = (g_screen_height - ball->r.h) / 2;
+    ball->v.x = 0.25;
+    ball->v.y = 0.25;
 }
 
 void paddle_init(Paddle * paddle, int position)
 {
+    paddle->r.w = 16;
+    paddle->r.h = 128;
     if (position == LEFT) {
-        paddle->pos_x = paddle->r.x = 10;
+        paddle->r.x = 10;
     } else {
-        paddle->pos_x = paddle->r.x = SCREEN_WIDTH - (10 + paddle->r.w);
+        paddle->r.x = g_screen_width - (10 + paddle->r.w);
     }
-    paddle->pos_y = (SCREEN_HEIGHT - paddle->r.h) / 2;
-    paddle->dx = 0;
-    paddle->dy = 0.50;
-    rect_set(&paddle->r, paddle->pos_x, paddle->pos_y, 16, 128);
+    paddle->r.y = (g_screen_height - paddle->r.h) / 2;
+    paddle->v.x = 0;
+    paddle->v.y = 0.50;
 }

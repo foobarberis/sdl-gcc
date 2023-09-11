@@ -4,6 +4,8 @@
 !*/
 # Whitelist the file you're interested in.
 !*.bmp
+!*.ttf
+!*.txt
 !*.c
 !*.h
 !Makefile

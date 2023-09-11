@@ -1,32 +1,63 @@
 #include "pong.h"
 
-// https://gamedev.stackexchange.com/questions/138837/drawing-at-floating-point-position
-// TODO Could use SDL_FRect instead of SDL_Rect
-void ball_move(Ball * ball)
+static int check_collision(SDL_FRect * r1, SDL_FRect * r2)
 {
-    ball->pos_x += ball->dx;
-    ball->pos_y += ball->dy;
+    return ((r1->x < r2->x + r2->w)
+        && (r2->x < r1->x + r1->w)
+        && (r1->y < r2->y + r2->h)
+        && (r2->y < r1->y + r1->h));
 }
 
-void paddle_move(Paddle * paddle, int direction)
+static void ball_update_after_collision(Paddle * paddle, Ball * ball)
 {
-    if (direction == UP) {
-        if (paddle->pos_y - paddle->dy >= 5.0)
-            paddle->pos_y -= paddle->dy;
-    } else if (direction == DOWN) {
-        if (paddle->pos_y + (float)paddle->r.h + paddle->dy <= SCREEN_HEIGHT - 5)
-            paddle->pos_y += paddle->dy;
+    int precision = 8;
+    int slice = paddle->r.h / precision;
+    int hit_position = (paddle->r.y + paddle->r.h) - ball->r.y;
+    float dy = 0.5;
+    float ddy = (2 * dy) / precision;
+    for (int i = 0; i < precision; i++) {
+        if ((hit_position >= i * slice) && (hit_position < (i + 1) * slice))
+            ball->v.y = dy * ball->v.x;
+        dy = dy - ddy;
     }
 }
 
-void game_update(Game * game)
+/* Handle the collision of the ball with the paddles and the walls */
+static void game_collision_handler(Game * game)
 {
-    if (game->serve)
-        ball_move(&game->ball);
-    game_collision_handler(game);
-    rect_set(&game->l_pad.r, game->l_pad.pos_x, game->l_pad.pos_y, 0, 0);
-    rect_set(&game->r_pad.r, game->r_pad.pos_x, game->r_pad.pos_y, 0, 0);
-    rect_set(&game->ball.r, game->ball.pos_x, game->ball.pos_y, 0, 0);
+    if (game->ball.r.x > g_screen_width + game->ball.r.w) { /* goes out right */
+        game->l_score++;
+        game_reset(game);
+        game->ball.v.x = -game->ball.v.x; /* change the direction of the 'serve' */
+    } else if (game->ball.r.x < 10 * -game->ball.r.w) { /* goes out left */
+        game->r_score++;
+        game_reset(game);
+    } else if ((game->ball.r.y <= BORDER_SIZE) || (game->ball.r.y + game->ball.r.h >= g_screen_height - BORDER_SIZE)) {
+        game->ball.v.y = -game->ball.v.y;
+    } else {
+        if (check_collision(&game->l_pad.r, &game->ball.r)) {
+            game->ball.v.x -= 0.05;
+            game->ball.v.x = -game->ball.v.x;
+            game->ball.r.x = game->l_pad.r.x + game->l_pad.r.w;
+            ball_update_after_collision(&game->l_pad, &game->ball);
+        } else if (check_collision(&game->r_pad.r, &game->ball.r)) {
+            game->ball.v.x += 0.05;
+            game->ball.v.x = -game->ball.v.x;
+            game->ball.r.x = game->r_pad.r.x - game->ball.r.w;
+            ball_update_after_collision(&game->l_pad, &game->ball);
+        }
+    }
+}
+
+static void paddle_move(Paddle * paddle, int direction)
+{
+    if (direction == UP) {
+        if (paddle->r.y - paddle->v.y >= BORDER_SIZE)
+            paddle->r.y -= paddle->v.y;
+    } else if (direction == DOWN) {
+        if (paddle->r.y + paddle->r.h + paddle->v.y <= g_screen_height - BORDER_SIZE)
+            paddle->r.y += paddle->v.y;
+    }
 }
 
 void game_input_handler(Game * game)
@@ -61,4 +92,13 @@ void game_input_handler(Game * game)
             break;
         }
     }
+}
+
+void game_update(Game * game)
+{
+    if (game->serve) {
+        game->ball.r.x += game->ball.v.x;
+        game->ball.r.y += game->ball.v.y;
+    }
+    game_collision_handler(game);
 }
