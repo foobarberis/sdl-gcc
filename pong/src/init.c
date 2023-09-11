@@ -29,7 +29,7 @@ static int game_init_fonts(Game * game)
         return 1;
     }
     TTF_SizeText(game->fonts[MEDIUM], "Paused, press Space to continue.", &game->pause_msg.w, &game->pause_msg.h);
-    game->pause_msg.x = 10;
+    game->pause_msg.x = game->l_pad.r.x;
     game->pause_msg.y = g_screen_height - 2 * game->pause_msg.h;
     return 0;
 }
@@ -129,7 +129,7 @@ int game_init(Game * game)
     if (game_init_sdl(game))
         return 1;
     if (game_init_fonts(game)) {
-        fprintf(stderr, "SDL_ttf encountered an error while opening a font! SDL_Error: %s\n", TTF_GetError());
+        fprintf(stderr, "An error occured while loading fonts! SDL_Error: %s\n", TTF_GetError());
         return 1;
     }
     if (game_init_textures(game)) {

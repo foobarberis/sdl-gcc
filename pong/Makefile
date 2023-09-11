@@ -2,7 +2,7 @@
 # We can also use make -d.
 
 NAME		:=	pong
-SRCS		:=	draw.c init.c main.c update.c utils.c
+SRCS		:=	draw.c init.c main.c update.c utils.c input.c
 HEAD		:=	pong.h
 
 CC			:=	clang
