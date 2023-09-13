@@ -16,7 +16,7 @@ SRCDIR		:=	src
 OBJDIR		:=	obj
 INCDIR		:=	inc
 
-SDL_PATH		:=	/opt/homebrew/Cellar/sdl2/2.28.2/
+SDL_PATH		:=	/opt/homebrew/Cellar/sdl2/2.28.3/
 SDL_INC			:=	$(SDL_PATH)include/SDL2/
 SDL_TTF_PATH	:=	/opt/homebrew/Cellar/sdl2_ttf/2.20.2/
 SDL_TTF_INC		:=	$(SDL_TTF_PATH)include/SDL2/

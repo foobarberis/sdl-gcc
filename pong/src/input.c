@@ -1,13 +1,13 @@
 #include "pong.h"
 
-static void paddle_move(Paddle * paddle, int direction)
+static void paddle_move(Paddle * paddle, int direction, double dt)
 {
     if (direction == UP) {
         if (paddle->r.y - paddle->v.y >= BORDER_SIZE)
-            paddle->r.y -= paddle->v.y;
+            paddle->r.y -= paddle->v.y * dt;
     } else if (direction == DOWN) {
         if (paddle->r.y + paddle->r.h + paddle->v.y <= g_screen_height - BORDER_SIZE)
-            paddle->r.y += paddle->v.y;
+            paddle->r.y += paddle->v.y * dt;
     }
 }
 
@@ -16,13 +16,13 @@ void game_input_handler(Game * game)
     SDL_PumpEvents();
     Uint8 const * keyboard_state_array = SDL_GetKeyboardState(NULL);
     if (keyboard_state_array[SDL_SCANCODE_A])
-        paddle_move(&game->l_pad, UP);
+        paddle_move(&game->l_pad, UP, game->dt);
     else if (keyboard_state_array[SDL_SCANCODE_S])
-        paddle_move(&game->l_pad, DOWN);
+        paddle_move(&game->l_pad, DOWN, game->dt);
     if (keyboard_state_array[SDL_SCANCODE_K])
-        paddle_move(&game->r_pad, UP);
+        paddle_move(&game->r_pad, UP, game->dt);
     else if (keyboard_state_array[SDL_SCANCODE_L])
-        paddle_move(&game->r_pad, DOWN);
+        paddle_move(&game->r_pad, DOWN, game->dt);
 
     while (SDL_PollEvent(&game->event)) {
         switch (game->event.type) {

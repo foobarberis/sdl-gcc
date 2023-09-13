@@ -179,11 +179,11 @@ void paddle_init(Paddle * paddle, int position)
     paddle->r.w = 16;
     paddle->r.h = 128;
     if (position == LEFT) {
-        paddle->r.x = 10;
+        paddle->r.x = paddle->r.w * 2;
     } else {
-        paddle->r.x = g_screen_width - (10 + paddle->r.w);
+        paddle->r.x = g_screen_width - (paddle->r.w * 2 + paddle->r.w);
     }
     paddle->r.y = (g_screen_height - paddle->r.h) / 2;
     paddle->v.x = 0;
-    paddle->v.y = 0.50;
+    paddle->v.y = 1.25;
 }

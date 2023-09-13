@@ -44,6 +44,7 @@ struct s_game {
     bool quit;
     bool pause;
     bool serve;
+    double dt;
     Ball ball;
     Paddle r_pad;
     Paddle l_pad;

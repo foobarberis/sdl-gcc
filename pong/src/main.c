@@ -11,7 +11,12 @@ int main(int argc, char ** argv)
         free(game);
         return EXIT_FAILURE;
     }
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
     while (game->quit == false) {
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
+        game->dt = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
         game_input_handler(game);
         if (game->pause == false) {
             game_update(game);

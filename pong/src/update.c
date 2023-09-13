@@ -44,7 +44,7 @@ static void game_collision_handler(Game * game)
             game->ball.v.x += 0.05;
             game->ball.v.x = -game->ball.v.x;
             game->ball.r.x = game->r_pad.r.x - game->ball.r.w;
-            ball_update_after_collision(&game->l_pad, &game->ball);
+            ball_update_after_collision(&game->r_pad, &game->ball);
         }
     }
 }
@@ -52,8 +52,8 @@ static void game_collision_handler(Game * game)
 void game_update(Game * game)
 {
     if (game->serve) {
-        game->ball.r.x += game->ball.v.x;
-        game->ball.r.y += game->ball.v.y;
+        game->ball.r.x += game->ball.v.x * game->dt;
+        game->ball.r.y += game->ball.v.y * game->dt;
     }
     game_collision_handler(game);
 }
