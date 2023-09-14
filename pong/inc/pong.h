@@ -7,11 +7,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-extern const float g_screen_width;
-extern const float g_screen_height;
+extern const unsigned int g_screen_width;
+extern const unsigned int g_screen_height;
 
 #define BORDER_SIZE 16 /* the size in pixels of the grey border at the top and bottom of the screen */
+// #define ASPECT_RATIO 1.333333F /* 4:3 */
+#define ASPECT_RATIO 1.6f
 
 typedef struct s_game Game;
 typedef struct s_object Ball;
@@ -30,6 +33,7 @@ struct s_vector2 {
 struct s_object {
     SDL_FRect r;
     Vec2 v;
+    float velocity;
 };
 
 struct s_game {
@@ -48,6 +52,7 @@ struct s_game {
     Ball ball;
     Paddle r_pad;
     Paddle l_pad;
+    SDL_FRect viewport;
     SDL_Rect pause_msg;
 };
 
